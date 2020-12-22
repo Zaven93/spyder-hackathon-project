@@ -1,3 +1,4 @@
+const ScrapeLinkedin = require('scrape-linkedin')
 const authentication = require('../google/index')
 const { google } = require('googleapis')
 const sheetModel = require('../models/googleSheet')
@@ -6,6 +7,7 @@ const serviceFinder = require('../services/index')
 // const ifUpdateUser = (users) => {
 //     for (let i = 0; i < users.length; i++) {}
 // }
+
 
 exports.retrieveUsers = async (req, res) => {
     const spreadsheetId = req.query.sheetId
