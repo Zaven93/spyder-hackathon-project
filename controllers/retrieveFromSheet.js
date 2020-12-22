@@ -1,5 +1,8 @@
+const ScrapeLinkedin = require('scrape-linkedin')
 const authentication = require('../google/index')
 const { google } = require('googleapis')
+
+const scrapper = new ScrapeLinkedin()
 
 const getFromSheet = (auth) => {
     return new Promise((success, failed) => {
@@ -58,6 +61,15 @@ exports.retrieveUsers = (req, res) => {
                                         <hr/>
                                         </div>`
                         )
+                    )
+
+                    return (
+                        scrapper
+                            .fetch('lisasabatini/')
+                            // Handle the result
+                            .then((profile) => console.log('Linked id data Zaven jan', profile))
+                            // Handle an error
+                            .catch((err) => console.log('Error Zaven', err))
                     )
                     // res.status(200).json({
                     //     message: response.map(
