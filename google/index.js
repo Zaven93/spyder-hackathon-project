@@ -19,7 +19,6 @@ class Authentication {
         })
     }
     getClientSecret() {
-        console.log('Credentials Zaven jan', require('./credentials.json'))
         return require('./credentials.json')
     }
 
@@ -65,7 +64,6 @@ class Authentication {
                 access_type: 'offline',
                 scope: SCOPES
             })
-            console.log('Authorize this app by visiting this url:', authUrl)
             const rl = readline.createInterface({
                 input: process.stdin,
                 output: process.stdout
@@ -80,7 +78,6 @@ class Authentication {
                     // Save the token for later program executions
                     fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
                         if (err) return console.error(err)
-                        console.log('Token stored to', TOKEN_PATH)
                     })
                     success(oAuth2Client)
                 })

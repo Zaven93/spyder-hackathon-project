@@ -1,12 +1,12 @@
 const authentication = require('../google/index')
 const { google } = require('googleapis')
 
-const getFromSheet = (auth) => {
+const getFromSheet = (auth, spreadsheetId) => {
     return new Promise((success, failed) => {
         const sheets = google.sheets({ version: 'v4', auth })
         sheets.spreadsheets.values.get(
             {
-                spreadsheetId: '10UjBhvKUfdOoeVSTVYHFI96Z2j7J50IyRMpxcpq9qm8',
+                spreadsheetId: spreadsheetId,
                 range: 'A:G'
             },
             (err, res) => {
@@ -38,12 +38,13 @@ const ifUpdateUser = (users) => {
 }
 
 exports.retrieveUsers = (req, res) => {
+    const spreadsheetId = req.query.sheetId
+
     authentication
         .authenticated()
         .then((auth) => {
-            getFromSheet(auth)
+            getFromSheet(auth, spreadsheetId)
                 .then((response) => {
-                    console.log('Response Zaven jan', response)
                     res.set('Content-Type', 'text/html')
                     res.send(
                         response.map(
