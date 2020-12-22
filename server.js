@@ -1,5 +1,6 @@
 const http = require('http')
 const bodyParser = require('body-parser')
+require('dotenv').config()
 
 const app = require('./routes/app')
 const PORT = process.env.PORT || 3000
