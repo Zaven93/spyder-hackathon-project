@@ -1,12 +1,14 @@
 const puppeteer = require('puppeteer')
 
-const scrap = async () => {
+const scrap = async (makRackUrl) => {
     const browser = await puppeteer.launch({
         headless: true
     })
     const page = await browser.newPage()
 
-    await page.goto('https://muckrack.com/caitlin-mccormack')
+    await page.goto(makRackUrl)
+
+    if (await page.$('selector') === null) return false
 
     const newPageUrl = await page.$eval('a.mr-contact', (elm) => elm.href)
 
@@ -17,8 +19,8 @@ const scrap = async () => {
 
         const emailInfo = await page.$eval('div.wpcw-widget-contact a', (elm) => elm.textContent)
 
-        console.log('Email info', emailInfo)
+        return emailInfo
     }
 }
 
-scrap()
+module.exports = scrap

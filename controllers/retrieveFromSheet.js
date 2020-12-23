@@ -1,6 +1,3 @@
-const ScrapeLinkedin = require('scrape-linkedin')
-const authentication = require('../google/index')
-const { google } = require('googleapis')
 const sheetModel = require('../models/googleSheet')
 const serviceFinder = require('../services/index')
 
@@ -12,27 +9,46 @@ const serviceFinder = require('../services/index')
 exports.retrieveUsers = async (req, res) => {
     const spreadsheetId = req.query.sheetId
     try {
-        const data = await sheetModel.getAll(spreadsheetId)
+        const sheetData = await sheetModel.getAll(spreadsheetId)
+        const muckRackData = await serviceFinder.muckRackAxios(sheetData[18]['Muck Rack'])
+        
+        for(let i = 0; i < 1; i++){
+            const updatedData = {}
+            const linkedin = sheetData[i].LinkedIn
+            const email = sheetData[i].Email
 
-        for(let i = 10; i < 20; i++){
-            const linkedin = data[i].LinkedIn
-            const email = data[i].Email
-            if(linkedin) {
-                const nymeraEmail = await serviceFinder.nymeraEmailByLinkedin(linkedin)
-                console.log(i, '--nymeraEmail', nymeraEmail)
-                console.log(i, '--email', email)
-                // if(nymeraEmail) 
+            console.log(sheetData[i]['Muck Rack'])
+
+            const linkedinData = linkedin ? await serviceFinder.nymeraEmailByLinkedin(linkedin) : false
+            const muckRackData = sheetData[i]['Muck Rack'] ? await serviceFinder.muckRackAxios(sheetData[i]['Muck Rack']) : false
+
+            if(!linkedin && muckRackData.linkedin) updatedData.LinkedIn = muckRackData.linkedin
+            if (linkedinData || muckRackData) {
+                if (muckRackData.email) {
+                    updatedData.Email = muckRackData.email
+                } else if (linkedinData.length > 0) {
+                    updatedData.Email = linkedinData[0].email
+                }
+
+                if (muckRackData.topic) updatedData.Topic = muckRackData.topic
+                if (muckRackData.jobTitle) updatedData.JobTitle = muckRackData.jobTitle
+                else if (muckRackData.email && muckRackData.email !== email) {
+
+                }
+            }
+
+            const result = {
+                ...sheetData[i],
+                ...updatedData,
+            }
+            try{
+                const updateResult = await sheetModel.getById(spreadsheetId, i + 2, result)
+                console.log(updateResult, 'result')
+            } catch (e) {
+                console.log(e, 'updateError')
             }
         }
-        console.log(data[0], 'response date')
     } catch (e) {
         console.log(e, '---error---')
     }
-}
-
-exports.checkUser = async (req, res) => {
-    const spreadsheetId = req.query.sheetId
-    const metadataN = req.query.metadataN
-
-    await sheetModel.getById(spreadsheetId)
 }

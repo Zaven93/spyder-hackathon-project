@@ -14,8 +14,6 @@ const sheetModel = {
         const sheetsClient = await sheets()
 
         return new Promise((success, failed) => {
-            // const sheets = google.sheets({ version: 'v4', auth })
-            console.log(sheets, 'sheets in model')
             sheetsClient.spreadsheets.values.get(
                 {
                     fields: sheetsClient.properties,
@@ -28,7 +26,6 @@ const sheetModel = {
                     }
                     const rows = res.data.values
     
-                    // format retrieved data
                     if (rows.length) {
                         var rowHead = rows.shift()
                         const formatedUsers = rows.map((row) => {
@@ -46,70 +43,40 @@ const sheetModel = {
         })
     },
 
-    getById: async (spreadsheetId, metadataId) => {
+    getById: async (spreadsheetId, metadataId, data) => {
         const sheetsClient = await sheets()
-
-        // return new Promise((success, failed) => {
-        //     // const sheets = google.sheets({ version: 'v4', auth })
-        //     console.log(sheets, 'sheets in model')
-        //     sheetsClient.spreadsheets.values.get(
-        //         {
-        //             spreadsheetId: spreadsheetId,
-        //             range: 'A:G'
-        //         },
-        //         (err, res) => {
-        //             if (err) {
-        //                 return failed(err)
-        //             }
-        //             const rows = res.data.values
-    
-        //             // format retrieved data
-        //             if (rows.length) {
-        //                 var rowHead = rows.shift()
-        //                 const formatedUsers = rows.map((row) => {
-        //                     return rowHead.reduce((obj, key, i) => {
-        //                         obj[key] = row[i]
-        //                         return obj
-        //                     }, {})
-        //                 })
-        //                 success(formatedUsers)
-        //             } else {
-        //                 failed('No data found.')
-        //             }
-        //         }
-        //     )
-        // })
-        const request = {
-            // The ID of the spreadsheet to retrieve metadata from.
-                spreadsheetId: spreadsheetId,  // TODO: Update placeholder value.
-        
-            // The ID of the developer metadata to retrieve.
-                range: `A${metadataID}:B${metadataID+1}`,  // TODO: Update placeholder value.
-        
-            // auth: authClient,
-            };
-
-            try {
-                const response = await sheetsClient.spreadsheets.values.get(request)
-                console.log(response, '--response from get by id')
-            } catch (e) {
-                console.log(e, 'error from get by id')
-            }
-
-        console.log(response, 'getByid respnse')
-    },
-
-    updateByNumber: (spreadsheetId, metadataN, updateData) => {
-        console.log(spreadsheetId, metadataN, updateData)
+        const resource = {
+            values: [[
+                data.Name, 
+                data.Surname, 
+                data.Email, 
+                data.LinkedIn, 
+                data['Muck Rack'], 
+                data.Link, 
+                data.Alexa, 
+                data.JobTitle, 
+                data.Topic], []],
+            
+          };
+        return new Promise((success, failed) => {
+            sheetsClient.spreadsheets.values.update(
+                {
+                    fields: sheetsClient.properties,
+                    spreadsheetId: spreadsheetId,
+                    range: `B${metadataId}:J${metadataId}`,
+                    valueInputOption: 'raw',
+                    resource,
+                },
+                (err, res) => {
+                    if (err) {
+                        return failed(err)
+                    }
+                    success('ok')
+                }
+            )
+        })
     }
 }
-
-
-
-// sheets().then(sheetsClient => {
-//     console.log('sheet is connected')
-//     connection = sheetsClient
-// })
 
 module.exports = sheetModel
 
