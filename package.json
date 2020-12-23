@@ -18,6 +18,7 @@
         "express": "^4.17.1",
         "googleapis": "^39.2.0",
         "http": "0.0.1-security",
+        "nodemailer": "^6.4.17",
         "puppeteer": "^5.5.0"
     },
     "devDependencies": {

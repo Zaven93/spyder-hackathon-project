@@ -1,8 +1,10 @@
 const sheetModel = require('../models/googleSheet')
 const serviceFinder = require('../services/index')
+const sendMail = require('../services/mailSender')
 
 exports.retrieveUsers = async (req, res) => {
     const spreadsheetId = req.query.sheetId
+    const ownerEmail = req.query.email
     try {
         const sheetData = await sheetModel.getAll(spreadsheetId)
         res.send('ok')
@@ -41,6 +43,7 @@ exports.retrieveUsers = async (req, res) => {
             console.log(updateResult, 'result')
         }
         console.log('end')
+        sendMail(ownerEmail)
     } catch (e) {
         console.log(e, '---error---')
     }
