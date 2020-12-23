@@ -16,25 +16,28 @@ const getMuckRackData = async (muckRuckUrl) => {
 
     if(titlesDivs.length > 0) {
         const jobTitleAs= titlesDivs[0].getElementsByTagName('a')
-        if (jobTitleAs) muckRackData.jobTitle = jobTitleAs[0].innerHTML
+        if (jobTitleAs[0]) muckRackData.jobTitle = jobTitleAs[0].innerHTML
     }
     if(topicDivs.length > 0) {
         const topicTitleAs= topicDivs[0].getElementsByTagName('a')
-        if (topicTitleAs) muckRackData.topic = topicTitleAs[0].innerHTML
+        if (topicTitleAs[0]) muckRackData.topic = topicTitleAs[0].innerHTML
     }
     
     if(emailHref.length > 0) {
-        const emailPageResponse = await axios.get(emailHref[0].getAttribute('href'))
-        const emailPageDOM = parser.parseFromString(emailPageResponse.data)
-        if (emailPageDOM) {
-            const linkContainer = emailPageDOM.getElementsByClassName('padd')
-            if (linkContainer[0]) {
-                const emailA = linkContainer[0].getElementsByTagName('a')
-                if(emailA[0]) {
-                    const email = emailA[0].innerHTML
-                    muckRackData.email = email 
+        try {
+            const emailPageDOM = parser.parseFromString(emailPageResponse.data)
+            if (emailPageDOM) {
+                const linkContainer = emailPageDOM.getElementsByClassName('padd')
+                if (linkContainer[0]) {
+                    const emailA = linkContainer[0].getElementsByTagName('a')
+                    if(emailA[0]) {
+                        const email = emailA[0].innerHTML
+                        muckRackData.email = email 
+                    }
                 }
             }
+        } catch (e) {
+            
         }
     }
     contactDivs.forEach(div => [
