@@ -1,11 +1,6 @@
 const sheetModel = require('../models/googleSheet')
 const serviceFinder = require('../services/index')
 
-// const ifUpdateUser = (users) => {
-//     for (let i = 0; i < users.length; i++) {}
-// }
-
-
 exports.retrieveUsers = async (req, res) => {
     const spreadsheetId = req.query.sheetId
     try {
@@ -45,7 +40,7 @@ exports.retrieveUsers = async (req, res) => {
             const updateResult = await sheetModel.getById(spreadsheetId, i + 2, result)
             console.log(updateResult, 'result')
         }
-        console.log('hhhh')
+        console.log('end')
     } catch (e) {
         console.log(e, '---error---')
     }
