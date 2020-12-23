@@ -9,7 +9,7 @@ exports.retrieveUsers = async (req, res) => {
         const sheetData = await sheetModel.getAll(spreadsheetId)
         res.send('ok')
         
-        for(let i = 0; i < 100; i++){
+        for(let i = 0; i < 20; i++){
             const updatedData = {}
             let linkedin = sheetData[i].LinkedIn
             const email = sheetData[i].Email
